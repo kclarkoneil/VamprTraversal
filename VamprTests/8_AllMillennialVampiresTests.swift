@@ -48,7 +48,7 @@ class AllMillennialVampiresTests: XCTestCase {
   }
   
   func test_allMillennialVampires_ShouldReturnAnArrayOfAlllVampiresConvertedAfter1980() {
-    let millennials = rootVampire.allMillennialVampires
+    let millennials = rootVampire.allMillennialVampires()
     
     func makeVampireIsEqualTo(_ vampire: Vampire) -> ((Vampire) -> Bool) {
       func vampireIsEqualTo(_ compareVampire: Vampire) -> Bool {

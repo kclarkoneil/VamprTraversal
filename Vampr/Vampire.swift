@@ -34,52 +34,123 @@ class Vampire {
   
   /// Adds the vampire as an offspring of this vampire
   func add(offspring: Vampire) {
-  
+    let newVampire = offspring
+    newVampire.creator = self
+    self.offspring.append(newVampire)
   }
   
   /// The total number of vampires created by that vampire
   var numberOfOffspring: Int {
-    return -1
+    return self.offspring.count
   }
   
   /// Returns the number of vampires away from the original vampire this vampire is
   var numberOfVampiresFromOriginal: Int {
-    return -1
+    var numberFromOriginal = 0
+    if let isNotRoot = self.creator {
+      numberFromOriginal += 1
+      numberFromOriginal += isNotRoot.numberOfVampiresFromOriginal
+    }
+    return numberFromOriginal
   }
   
   /// Returns true if this vampire is more senior than the other vampire. (Who is closer to the original vampire)
   func isMoreSenior(than vampire: Vampire) -> Bool {
-    return false
+    if (self.numberOfVampiresFromOriginal < vampire.numberOfVampiresFromOriginal) {
+      return true
+    }
+    else {
+      return false
+    }
   }
   
-  // MARK: Tree traversal methods
+  // MARK: Stretch
+  
+  /**
+   Returns the closest common ancestor of two vampires.
+   The closest common anscestor should be the more senior vampire if a direct ancestor is used.
+   
+   - Example:
+   * when comparing Ansel and Sarah, Ansel is the closest common anscestor.
+   * when comparing Ansel and Andrew, Ansel is the closest common anscestor.
+   */
+  func closestCommonAncestor(vampire: Vampire) -> Vampire {
+    var vampA = self
+    var vampB = vampire
+    if vampA === vampB {
+      return vampA
+    }
+    if vampA === vampB.creator {
+      return vampA
+    }
+    if vampB === vampA.creator {
+      return vampB
+    }
+    if vampA.creator === vampB.creator {
+      return vampA.creator!
+    }
+    guard vampA.numberOfVampiresFromOriginal == vampB.numberOfVampiresFromOriginal else {
+      if vampA.numberOfVampiresFromOriginal > vampB.numberOfVampiresFromOriginal {
+        vampA = vampA.creator!
+        return vampA.closestCommonAncestor(vampire: vampB)
+      }
+      else {
+        vampB = vampB.creator!
+        return vampA.closestCommonAncestor(vampire:vampB)
+      }
+    }
+    vampA = vampA.creator!
+    vampB = vampB.creator!
+    return vampA.closestCommonAncestor(vampire:vampB)
+    
+    
+  }
   
   /// Returns the vampire object with that name, or null if no vampire exists with that name
   func vampire(withName name: String) -> Vampire? {
+    if self.name == name {
+      return self
+    }
+    for vamp in self.offspring {
+      if let isNamed = vamp.vampire(withName: name) {
+        return isNamed
+      }
+    }
     return nil
   }
   
-  /// Returns the total number of vampires that exist
-  var totalDescendent: Int {
-    return -1
+  /// Returns the total number of vampires that exist *actually just a variable
+  func totalDescendent() -> Int {
+    var descendents = 0
+    for descendent in self.offspring {
+      descendents += 1
+      if descendent.offspring.count > 0 {
+        descendents += descendent.totalDescendent()
+      }
+    }
+    return descendents
   }
   
   /// Returns an array of all the vampires that were converted after 1980
-  var allMillennialVampires: [Vampire] {
-    return []
-  }
-  
-  // MARK: Stretch 
-  
-  /**
-    Returns the closest common ancestor of two vampires.
-    The closest common anscestor should be the more senior vampire if a direct ancestor is used.
- 
-    - Example:
-      * when comparing Ansel and Sarah, Ansel is the closest common anscestor.
-      * when comparing Ansel and Andrew, Ansel is the closest common anscestor.
-   */
-  func closestCommonAncestor(vampire: Vampire) -> Vampire {
-    return vampire
-  }
+  func allMillennialVampires() -> [Vampire] {
+    
+    var millenialArray = [Vampire]()
+    
+    if self.yearConverted >= 1980 {
+      millenialArray.append(self)
+    }
+    
+    if self.offspring.count > 0 {
+      
+    for isMillenial in self.offspring {
+      
+        millenialArray = isMillenial.allMillennialVampires()
+      
+      }
+    }
+    return millenialArray
 }
+}
+
+  
+

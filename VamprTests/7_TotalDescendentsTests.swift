@@ -48,9 +48,9 @@ class TotalDescendentsTests: XCTestCase {
   }
   
   func test_totalDescendent_ShouldReturnTotalDescendentsUnderASpecificVampire() {
-    XCTAssertEqual(rootVampire.totalDescendent, 8)
-    XCTAssertEqual(offspring.0.totalDescendent, 0)
-    XCTAssertEqual(offspring.1.totalDescendent, 1)
-    XCTAssertEqual(offspring.2.totalDescendent, 4)
+    XCTAssertEqual(rootVampire.totalDescendent(), 8)
+    XCTAssertEqual(offspring.0.totalDescendent(), 0)
+    XCTAssertEqual(offspring.1.totalDescendent(), 1)
+    XCTAssertEqual(offspring.2.totalDescendent(), 4)
   }
 }
